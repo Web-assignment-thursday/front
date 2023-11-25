@@ -5,14 +5,21 @@ import Select from "react-select";
 export default function Home() {
   const [selectedCity, setSelectedCity] = useState(null);
 
-  const handleCityChange = (selectedOption: any) => {
-    setSelectedCity(selectedOption.value);
+  const [weatherData, setWeatherData] = useState(null); // Add this line
+
+  const handleCityChange = async (selectedOption: any) => {
+    setSelectedCity(selectedOption.value.city);
+    const res = await fetch(
+      `http://localhost:3000/weather?nx=${selectedOption.value.nx}&ny=${selectedOption.value.ny}`
+    );
+    const data = await res.json();
+    setWeatherData(data);
   };
 
   const cityOptions = [
-    { value: "City 1", label: "City 1" },
-    { value: "City 2", label: "City 2" },
-    { value: "City 3", label: "City 3" },
+    { value: { city: "서울", nx: "55", ny: "127" }, label: "서울" },
+    { value: { city: "부산", nx: "96", ny: "76" }, label: "부산" },
+    { value: { city: "인천", nx: "55", ny: "124" }, label: "City 3" },
   ];
 
   return (
@@ -41,9 +48,12 @@ export default function Home() {
         <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
           <div className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600">
             {selectedCity ? (
-              <h3 className="text-2xl font-bold">
-                {selectedCity}의 날씨 데이터가 이 곳으로 들어올 겁니다.
-              </h3>
+              <div>
+                <h3 className="text-2xl font-bold">
+                  {selectedCity}의 날씨 데이터입니다:
+                </h3>
+                <pre>{JSON.stringify(weatherData, null, 2)}</pre>
+              </div>
             ) : (
               <h3 className="text-2xl font-bold">도시를 선택해 주세요</h3>
             )}
