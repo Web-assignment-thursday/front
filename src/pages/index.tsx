@@ -43,6 +43,19 @@ export default function Home() {
     { value: { city: "인천", nx: "55", ny: "124" }, label: "인천" },
   ];
 
+  let temperatures = [];
+
+  for (const time in weatherData) {
+    const temperature = parseFloat(weatherData[time]["기온"].split(" ")[0]);
+    temperatures.push(temperature);
+  }
+
+  const averageTemp =
+    temperatures.reduce((a, b) => a + b, 0) / temperatures.length;
+
+  const maxTemp = Math.max(...temperatures);
+  const minTemp = Math.min(...temperatures);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-white">
       <Head>
@@ -72,6 +85,11 @@ export default function Home() {
               <div>
                 {weatherData && (
                   <>
+                    <div className="text-xl">
+                      <p>평균 기온: {averageTemp.toFixed(2)} °C</p>
+                      <p>최고 기온: {maxTemp.toFixed(2)} °C</p>
+                      <p>최저 기온: {minTemp.toFixed(2)} °C</p>
+                    </div>
                     <div
                       className="flex space-x-6 text-xl m-10"
                       style={{ justifyContent: "space-between" }}
