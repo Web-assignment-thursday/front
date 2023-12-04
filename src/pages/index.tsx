@@ -23,6 +23,16 @@ interface WeatherData {
   };
 }
 
+const weather: { 맑음: string; 구름많음: string; 흐림: string } = {
+  맑음: "sunny",
+  구름많음: "cloudy",
+  흐림: "cloudy",
+};
+
+const typeError = "맑음";
+// 타입을 명시적으로 지정하여 에러 해결
+const weatherType: string = weather[typeError as keyof typeof weather];
+
 export default function Home() {
   const [selectedCity, setSelectedCity] = useState(null);
 
@@ -95,29 +105,32 @@ export default function Home() {
                       style={{ justifyContent: "space-between" }}
                     >
                       {Object.entries(weatherData).map(([time, data]) => {
-                        const skyStatus = (data as any)["하늘상태"];
-                        const precipitationType = (data as any)["강수형태"];
-
-                        const skySymbols = {
+                        const skySymbols: { [key: string]: string } = {
                           맑음: "☀️",
                           구름많음: "⛅",
                           흐림: "☁️",
                         };
 
-                        const precipitationSymbols = {
-                          없음: "",
-                          비: "🌧️",
-                          "비/눈": "🌨️",
-                          눈: "❄️",
-                          소나기: "🌦️",
+                        const precipitationSymbols: { [key: string]: string } =
+                          {
+                            없음: "",
+                            비: "🌧️",
+                            "비/눈": "🌨️",
+                            눈: "❄️",
+                            소나기: "🌦️",
+                          };
+
+                        type Data = {
+                          하늘상태: keyof typeof skySymbols;
+                          강수형태: keyof typeof precipitationSymbols;
                         };
 
                         return (
                           <span key={time} style={{ margin: "0 10px" }}>
                             <h3>{parseInt(time) / 100}시</h3>
                             <p>
-                              {skySymbols[skyStatus]}{" "}
-                              {precipitationSymbols[precipitationType]}
+                              {skySymbols[data.하늘상태]}
+                              {precipitationSymbols[data.강수형태]}
                             </p>
                           </span>
                         );
